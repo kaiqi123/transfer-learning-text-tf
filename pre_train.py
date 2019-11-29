@@ -49,7 +49,7 @@ def train(train_x, train_y, word_dict, args):
 
         # Training loop
         batches = batch_iter(train_x, train_y, BATCH_SIZE, NUM_EPOCHS)
-        print(type(batches), len(batches))
+        print(type(batches))
 
         for batch_x, _ in batches:
             train_step(batch_x)
