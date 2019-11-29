@@ -49,18 +49,21 @@ def train(train_x, train_y, word_dict, args):
 
         # Training loop
         batches = batch_iter(train_x, train_y, BATCH_SIZE, NUM_EPOCHS)
+        print(type(batches), len(batches))
 
         for batch_x, _ in batches:
             train_step(batch_x)
             step = tf.train.global_step(sess, global_step)
 
-            if step % 5000 == 0:
-                saver.save(sess, os.path.join(args.model, "model", "model.ckpt"), global_step=step)
+            if step % 100 == 0:
+                saver.save(sess, os.path.join(args.save, "model", "model.ckpt"), global_step=step)
+                print("save to {}".format(args.save))
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", type=str, default="auto_encoder", help="auto_encoder | language_model")
+    parser.add_argument("--save", type=str, default="save_model_auto_encoder")
     args = parser.parse_args()
 
     if not os.path.exists("dbpedia_csv"):
