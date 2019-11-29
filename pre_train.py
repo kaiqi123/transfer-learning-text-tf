@@ -2,7 +2,7 @@ import tensorflow as tf
 import argparse
 import os
 from model.auto_encoder import AutoEncoder
-from model.language_model import LanguageModel
+# from model.language_model import LanguageModel
 from data_utils import build_word_dict, build_word_dataset, batch_iter, download_dbpedia
 
 
