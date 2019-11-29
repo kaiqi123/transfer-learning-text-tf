@@ -6,7 +6,7 @@ from auto_encoder import AutoEncoder
 from data_utils import build_word_dict, build_word_dataset, batch_iter, download_dbpedia
 
 
-BATCH_SIZE = 64
+BATCH_SIZE = 16
 NUM_EPOCHS = 10
 MAX_DOCUMENT_LEN = 100
 
