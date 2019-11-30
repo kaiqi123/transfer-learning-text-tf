@@ -67,10 +67,12 @@ def build_word_dataset(step, word_dict, document_max_len):
     if step == "train":
         # df = pd.read_csv(TRAIN_PATH, names=["class", "title", "content"])
         df = pd.read_csv(TRAIN_PATH, names=["id", "label", "content"], sep='\t')
+        df[['label']] = df[['label']].astype(int)
 
     else:
         # df = pd.read_csv(TEST_PATH, names=["class", "title", "content"])
         df = pd.read_csv(TEST_PATH, names=["id", "label", "content"], sep='\t')
+        df[['label']] = df[['label']].astype(int)
 
     # Shuffle dataframe
     df = df.sample(frac=1)
