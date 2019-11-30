@@ -72,7 +72,7 @@ def build_word_dataset(step, word_dict, document_max_len):
     x = list(map(lambda d: d + (document_max_len - len(d)) * [word_dict["<pad>"]], x))
 
     y = list(map(lambda d: d - 1, list(df["class"])))
-
+    print(y[0], type(y[0]))
     return x, y
 
 
