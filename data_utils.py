@@ -8,11 +8,9 @@ import pandas as pd
 import pickle
 import numpy as np
 
-# TRAIN_PATH = "dbpedia_csv/train.csv"
-# TEST_PATH = "dbpedia_csv/test.csv"
-
 TRAIN_PATH = "data/gossipcop_content_no_ignore.tsv"
 TEST_PATH = "data/politifact_content_no_ignore.tsv"
+
 
 def download_dbpedia():
     dbpedia_url = 'https://github.com/le-scientifique/torchDatasets/raw/master/dbpedia_csv.tar.gz'
@@ -32,11 +30,9 @@ def clean_str(text):
 
 def build_word_dict():
     if not os.path.exists("word_dict.pickle"):
-        # train_df = pd.read_csv(TRAIN_PATH, names=["class", "title", "content"])
-        train_df = pd.read_csv(TRAIN_PATH, names=["id", "label", "content"], sep='\t')
-        train_df[['label']] = train_df[['label']].astype(int)
-
+        train_df = pd.read_csv(TRAIN_PATH, names=["id", "label", "content"],sep='\t',header=0)
         contents = train_df["content"]
+        print('contents',len(contents))
 
         words = list()
         for content in contents:
@@ -65,14 +61,9 @@ def build_word_dict():
 
 def build_word_dataset(step, word_dict, document_max_len):
     if step == "train":
-        # df = pd.read_csv(TRAIN_PATH, names=["class", "title", "content"])
-        df = pd.read_csv(TRAIN_PATH, names=["id", "label", "content"], sep='\t')
-        df[['label']] = df[['label']].astype(int)
-
+        df = pd.read_csv(TRAIN_PATH, names=["id", "label", "content"], sep='\t',header=0)
     else:
-        # df = pd.read_csv(TEST_PATH, names=["class", "title", "content"])
-        df = pd.read_csv(TEST_PATH, names=["id", "label", "content"], sep='\t')
-        df[['label']] = df[['label']].astype(int)
+        df = pd.read_csv(TEST_PATH, names=["id", "label", "content"], sep='\t',header=0)
 
     # Shuffle dataframe
     df = df.sample(frac=1)
@@ -80,10 +71,12 @@ def build_word_dataset(step, word_dict, document_max_len):
     x = list(map(lambda d: list(map(lambda w: word_dict.get(w, word_dict["<unk>"]), d)), x))
     x = list(map(lambda d: d[:document_max_len], x))
     x = list(map(lambda d: d + (document_max_len - len(d)) * [word_dict["<pad>"]], x))
+    la = list(df["label"])
+    print('---la----',len(la))
+    y = list(map(lambda d: d , la))
+    print('y',len(y))
 
-    y = list(map(lambda d: d - 1, list(df["label"])))
 
-    print(y[0], type(y[0]))
     return x, y
 
 
