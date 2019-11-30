@@ -4,6 +4,7 @@ import os
 from auto_encoder import AutoEncoder
 # from model.language_model import LanguageModel
 from data_utils import build_word_dict, build_word_dataset, batch_iter, download_dbpedia
+import time
 
 BATCH_SIZE = 32
 NUM_EPOCHS = 10
@@ -50,6 +51,7 @@ def train(train_x, train_y, word_dict, args):
         batches = batch_iter(train_x, train_y, BATCH_SIZE, NUM_EPOCHS)
 
         for batch_x, _ in batches:
+            st = time.time()
             train_step(batch_x)
             step = tf.train.global_step(sess, global_step)
 
@@ -58,6 +60,8 @@ def train(train_x, train_y, word_dict, args):
                 print("epoch: {}, steps_per_epoch: {}".format(int(step/steps_per_epoch), steps_per_epoch))
                 saver.save(sess, os.path.join(args.save, "model", "model.ckpt"), global_step=step)
                 print("step: {}, save to {}".format(step, args.save))
+                print("time of one epoch: {}".format(time.time()-st))
+                st = time.time()
 
 
 if __name__ == "__main__":
