@@ -73,5 +73,5 @@ if __name__ == "__main__":
     word_dict = build_word_dict()
     print("Preprocessing dataset..")
     train_x, train_y = build_word_dataset("train", word_dict, MAX_DOCUMENT_LEN)
-    print("length of train_x: {}, length of train_y: {}".format(train_x, train_y))
+    print("length of train_x: {}, length of train_y: {}".format(len(train_x), len(train_y)))
     train(train_x, train_y, word_dict, args)
