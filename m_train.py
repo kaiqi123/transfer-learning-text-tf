@@ -4,7 +4,6 @@ import os
 from word_rnn import WordRNN
 from data_utils import build_word_dict, build_word_dataset, batch_iter, download_dbpedia
 
-
 NUM_CLASS = 14
 BATCH_SIZE = 32
 NUM_EPOCHS = 1
