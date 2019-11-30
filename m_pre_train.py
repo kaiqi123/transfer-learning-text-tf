@@ -34,7 +34,7 @@ def train(train_x, train_y, word_dict, args):
         summary_writer = tf.summary.FileWriter(args.model, sess.graph)
 
         # Checkpoint
-        saver = tf.train.Saver(tf.global_variables())
+        saver = tf.train.Saver(tf.global_variables(), max_to_keep=2)
 
         # Initialize all variables
         sess.run(tf.global_variables_initializer())

@@ -1,13 +1,13 @@
 import tensorflow as tf
 import argparse
 import os
-from model.word_rnn import WordRNN
+import WordRNN
 from data_utils import build_word_dict, build_word_dataset, batch_iter, download_dbpedia
 
 
 NUM_CLASS = 14
-BATCH_SIZE = 64
-NUM_EPOCHS = 10
+BATCH_SIZE = 32
+NUM_EPOCHS = 1
 MAX_DOCUMENT_LEN = 100
 
 
@@ -49,7 +49,7 @@ def train(train_x, train_y, test_x, test_y, vocabulary_size, args):
             _, step, summaries, loss = sess.run([train_op, global_step, summary_op, model.loss], feed_dict=feed_dict)
             summary_writer.add_summary(summaries, step)
 
-            if step % 100 == 0:
+            if step % 5 == 0:
                 print("step {0} : loss = {1}".format(step, loss))
 
         def test_accuracy(test_x, test_y):
