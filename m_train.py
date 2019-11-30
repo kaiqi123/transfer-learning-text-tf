@@ -84,7 +84,7 @@ if __name__ == "__main__":
     parser.add_argument("--summary_dir", type=str, default="classifier", help="summary dir.")
     args = parser.parse_args()
 
-    os.environ['CUDA_VISIBLE_DEVICES'] = 0
+    os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
     if not os.path.exists("dbpedia_csv"):
         print("Downloading dbpedia dataset...")
