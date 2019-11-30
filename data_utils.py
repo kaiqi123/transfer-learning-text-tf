@@ -34,6 +34,8 @@ def build_word_dict():
     if not os.path.exists("word_dict.pickle"):
         # train_df = pd.read_csv(TRAIN_PATH, names=["class", "title", "content"])
         train_df = pd.read_csv(TRAIN_PATH, names=["id", "label", "content"], sep='\t')
+        train_df[['label']] = train_df[['label']].astype(int)
+
         contents = train_df["content"]
 
         words = list()
