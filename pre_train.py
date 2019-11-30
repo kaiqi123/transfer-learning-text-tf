@@ -44,18 +44,17 @@ def train(train_x, train_y, word_dict, args):
             _, step, summaries, loss = sess.run([train_op, global_step, summary_op, model.loss], feed_dict=feed_dict)
             summary_writer.add_summary(summaries, step)
 
-            if step % 100 == 0:
+            if step % 5 == 0:
                 print("step {0} : loss = {1}".format(step, loss))
 
         # Training loop
         batches = batch_iter(train_x, train_y, BATCH_SIZE, NUM_EPOCHS)
-        print(type(batches))
 
         for batch_x, _ in batches:
             train_step(batch_x)
             step = tf.train.global_step(sess, global_step)
 
-            if step % 100 == 0:
+            if step % 5 == 0:
                 saver.save(sess, os.path.join(args.save, "model", "model.ckpt"), global_step=step)
                 print("save to {}".format(args.save))
 
@@ -74,4 +73,5 @@ if __name__ == "__main__":
     word_dict = build_word_dict()
     print("Preprocessing dataset..")
     train_x, train_y = build_word_dataset("train", word_dict, MAX_DOCUMENT_LEN)
+    print("length of train_x: {}, length of train_y: {}".format(train_x, train_y))
     train(train_x, train_y, word_dict, args)
