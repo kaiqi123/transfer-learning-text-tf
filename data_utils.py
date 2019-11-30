@@ -8,9 +8,11 @@ import pandas as pd
 import pickle
 import numpy as np
 
-TRAIN_PATH = "dbpedia_csv/train.csv"
-TEST_PATH = "dbpedia_csv/test.csv"
+# TRAIN_PATH = "dbpedia_csv/train.csv"
+# TEST_PATH = "dbpedia_csv/test.csv"
 
+TRAIN_PATH = "data/gossipcop_content_no_ignore.tsv"
+TEST_PATH = "data/politifact_content_no_ignore.tsv"
 
 def download_dbpedia():
     dbpedia_url = 'https://github.com/le-scientifique/torchDatasets/raw/master/dbpedia_csv.tar.gz'
@@ -60,9 +62,12 @@ def build_word_dict():
 
 def build_word_dataset(step, word_dict, document_max_len):
     if step == "train":
-        df = pd.read_csv(TRAIN_PATH, names=["class", "title", "content"])
+        # df = pd.read_csv(TRAIN_PATH, names=["class", "title", "content"])
+        df = pd.read_csv(TRAIN_PATH, names=["id", "label", "content"], sep='\t')
+
     else:
-        df = pd.read_csv(TEST_PATH, names=["class", "title", "content"])
+        # df = pd.read_csv(TEST_PATH, names=["class", "title", "content"])
+        df = pd.read_csv(TEST_PATH, names=["id", "label", "content"], sep='\t')
 
     # Shuffle dataframe
     df = df.sample(frac=1)
@@ -72,6 +77,7 @@ def build_word_dataset(step, word_dict, document_max_len):
     x = list(map(lambda d: d + (document_max_len - len(d)) * [word_dict["<pad>"]], x))
 
     y = list(map(lambda d: d - 1, list(df["class"])))
+
     print(y[0], type(y[0]))
     return x, y
 
