@@ -73,7 +73,7 @@ def train(train_x, train_y, test_x, test_y, vocabulary_size, args):
             train_step(batch_x, batch_y)
             step = tf.train.global_step(sess, global_step)
 
-            if step % 200 == 0:
+            if step % 5 == 0:
                 test_acc = test_accuracy(test_x, test_y)
                 print("test_accuracy = {0}\n".format(test_acc))
 
@@ -83,6 +83,8 @@ if __name__ == "__main__":
     parser.add_argument("--pre_trained", type=str, default="none", help="none | auto_encoder | language_model")
     parser.add_argument("--summary_dir", type=str, default="classifier", help="summary dir.")
     args = parser.parse_args()
+
+    os.environ['CUDA_VISIBLE_DEVICES'] = 0
 
     if not os.path.exists("dbpedia_csv"):
         print("Downloading dbpedia dataset...")
