@@ -65,6 +65,8 @@ if __name__ == "__main__":
     parser.add_argument("--save", type=str, default="save_model_auto_encoder")
     args = parser.parse_args()
 
+    os.environ['CUDA_VISIBLE_DEVICES'] = "0"
+
     if not os.path.exists("dbpedia_csv"):
         print("Downloading dbpedia dataset...")
         download_dbpedia()
