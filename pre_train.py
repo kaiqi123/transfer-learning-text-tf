@@ -8,6 +8,7 @@ from data_utils import build_word_dict, build_word_dataset, batch_iter, download
 BATCH_SIZE = 32
 NUM_EPOCHS = 10
 MAX_DOCUMENT_LEN = 100
+num_train = 5816
 
 def train(train_x, train_y, word_dict, args):
     with tf.Session() as sess:
@@ -52,9 +53,11 @@ def train(train_x, train_y, word_dict, args):
             train_step(batch_x)
             step = tf.train.global_step(sess, global_step)
 
-            if step % 10 == 0:
+            steps_per_epoch = int(num_train/BATCH_SIZE)
+            if step % steps_per_epoch == 0:
+                print("epoch: {}, steps_per_epoch: {}".format(int(step/steps_per_epoch), steps_per_epoch))
                 saver.save(sess, os.path.join(args.save, "model", "model.ckpt"), global_step=step)
-                print("save to {}".format(args.save))
+                print("step: {}, save to {}".format(step, args.save))
 
 
 if __name__ == "__main__":
