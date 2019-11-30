@@ -50,8 +50,8 @@ def train(train_x, train_y, word_dict, args):
         # Training loop
         batches = batch_iter(train_x, train_y, BATCH_SIZE, NUM_EPOCHS)
 
+        st = time.time()
         for batch_x, _ in batches:
-            st = time.time()
             train_step(batch_x)
             step = tf.train.global_step(sess, global_step)
 
