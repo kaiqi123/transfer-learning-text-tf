@@ -62,7 +62,8 @@ def train(train_x, train_y, test_x, test_y, vocabulary_size, args):
                 cnt += 1
 
             with open(args.summary_dir +"-accuracy.txt", "a") as f:
-                print(sum_accuracy/cnt, file=f)
+                # print(sum_accuracy/cnt, file=f)
+                print(sum_accuracy/cnt, f)
 
             return sum_accuracy / cnt
 
