@@ -2,7 +2,6 @@ import tensorflow as tf
 import argparse
 import os
 from auto_encoder import AutoEncoder
-# from model.language_model import LanguageModel
 from data_utils import build_word_dict, build_word_dataset, batch_iter, download_dbpedia
 import time
 
@@ -15,10 +14,8 @@ def train(train_x, train_y, word_dict, args):
     with tf.Session() as sess:
         if args.model == "auto_encoder":
             model = AutoEncoder(word_dict, MAX_DOCUMENT_LEN)
-        elif args.model == "language_model":
-            model = LanguageModel(word_dict, MAX_DOCUMENT_LEN)
         else:
-            raise ValueError("Invalid model: {0}. Use auto_encoder | language_model".format(args.model))
+            raise ValueError("Not found model: {}.".format(args.model))
 
         # Define training procedure
         global_step = tf.Variable(0, trainable=False)
@@ -29,24 +26,24 @@ def train(train_x, train_y, word_dict, args):
         train_op = optimizer.apply_gradients(zip(clipped_gradients, params), global_step=global_step)
 
         # Summary
-        loss_summary = tf.summary.scalar("loss", model.loss)
-        summary_op = tf.summary.merge_all()
-        summary_writer = tf.summary.FileWriter(args.save, sess.graph)
+        # loss_summary = tf.summary.scalar("loss", model.loss)
+        # summary_op = tf.summary.merge_all()
+        # summary_writer = tf.summary.FileWriter(args.save, sess.graph)
 
         # Checkpoint
-        saver = tf.train.Saver(tf.global_variables(), max_to_keep=2)
+        saver = tf.train.Saver(tf.global_variables(), max_to_keep=1)
 
         # Initialize all variables
         sess.run(tf.global_variables_initializer())
 
         def train_step(batch_x):
             feed_dict = {model.x: batch_x}
-            _, step, summaries, loss = sess.run([train_op, global_step, summary_op, model.loss], feed_dict=feed_dict)
-            summary_writer.add_summary(summaries, step)
+            _, step, loss = sess.run([train_op, global_step, model.loss], feed_dict=feed_dict)
+            # summary_writer.add_summary(summaries, step)
 
             if step % 100 == 0:
                 print("step {0} : loss = {1}".format(step, loss))
-                with open("pre-train-loss-all.txt", "a") as f:
+                with open("pre-train-loss-all-"+args.save+".txt", "a") as f:
                     print("step {0} : loss = {1}".format(step, loss), file=f)
 
         # Training loop
@@ -69,10 +66,10 @@ if __name__ == "__main__":
     stt = time.time()
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", type=str, default="auto_encoder", help="auto_encoder | language_model")
-    parser.add_argument("--save", type=str, default="save_model_auto_encoder_all")
+    parser.add_argument("--save", type=str, default="save_model_auto_encoder_all_delete_5000_domainword")
     args = parser.parse_args()
 
-    os.environ['CUDA_VISIBLE_DEVICES'] = "2"
+    os.environ['CUDA_VISIBLE_DEVICES'] = "0"
 
     # if not os.path.exists("dbpedia_csv"):
     #     print("Downloading dbpedia dataset...")

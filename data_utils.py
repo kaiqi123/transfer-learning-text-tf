@@ -11,11 +11,20 @@ import numpy as np
 # TRAIN_PATH = "data/gossipcop_content_no_ignore.tsv"
 # TEST_PATH = "data/politifact_content_no_ignore.tsv"
 
-# TRAIN_PATH = "data/gossipcop.tsv"
-# TEST_PATH = "data/politifact.tsv"
+# TRAIN_PATH = "data/gossipcop_delete_500.tsv"
+# TEST_PATH = "data/politifact_delete_500.tsv"
 
-TRAIN_PATH = "data/merge_data.tsv"
-TEST_PATH = "data/politifact.tsv"
+# TRAIN_PATH = "data/gossipcop_delete_5000.tsv"
+# TEST_PATH = "data/politifact_delete_5000.tsv"
+
+# TRAIN_PATH = "data/gossipcop_delete_20000.tsv"
+# TEST_PATH = "data/politifact_delete_20000.tsv"
+
+TRAIN_PATH = "data/gossipcop_domainword_5000.tsv"
+TEST_PATH = "data/politifact_domainword_5000.tsv"
+
+# TRAIN_PATH = "data/merge_data_domainword_5000.tsv"
+# TEST_PATH = "data/politifact_domainword_5000.tsv"
 
 def download_dbpedia():
     dbpedia_url = 'https://github.com/le-scientifique/torchDatasets/raw/master/dbpedia_csv.tar.gz'

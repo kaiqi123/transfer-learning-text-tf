@@ -7,7 +7,7 @@ import time
 
 NUM_CLASS = 2
 BATCH_SIZE = 256
-NUM_EPOCHS = 25
+NUM_EPOCHS = 40
 MAX_DOCUMENT_LEN = 100
 num_train = 5816
 num_test = 415
@@ -27,10 +27,10 @@ def train(train_x, train_y, test_x, test_y, vocabulary_size, args):
         # optimizer = tf.train.AdamOptimizer(model.lr)
         # train_op = optimizer.apply_gradients(zip(gradients, params), global_step=global_step)
 
-        # Summary
-        loss_summary = tf.summary.scalar("loss", model.loss)
-        summary_op = tf.summary.merge_all()
-        summary_writer = tf.summary.FileWriter(args.summary_dir, sess.graph)
+        # # Summary
+        # loss_summary = tf.summary.scalar("loss", model.loss)
+        # summary_op = tf.summary.merge_all()
+        # summary_writer = tf.summary.FileWriter(args.summary_dir, sess.graph)
 
         # Initialize all variables
         sess.run(tf.global_variables_initializer())
@@ -50,8 +50,8 @@ def train(train_x, train_y, test_x, test_y, vocabulary_size, args):
                 model.y: batch_y,
                 model.keep_prob: 0.8,
             }
-            _, step, summaries, loss = sess.run([train_op, global_step, summary_op, model.loss], feed_dict=feed_dict)
-            summary_writer.add_summary(summaries, step)
+            _, step, loss = sess.run([train_op, global_step, model.loss], feed_dict=feed_dict)
+            # summary_writer.add_summary(summaries, step)
             return loss
 
         def test_accuracy(test_x, test_y):
@@ -109,18 +109,14 @@ def train(train_x, train_y, test_x, test_y, vocabulary_size, args):
 if __name__ == "__main__":
     stt = time.time()
     parser = argparse.ArgumentParser()
-    parser.add_argument("--pre_trained", type=str, default="auto_encoder", help="none | auto_encoder | language_model")
+    parser.add_argument("--pre_trained", type=str, default="auto_encoder", help="none or auto_encoder")
     parser.add_argument("--summary_dir", type=str, default="summary_classifier", help="summary dir.")
-    parser.add_argument("--restore_path", type=str, default="save_model_auto_encoder")
+    parser.add_argument("--restore_path", type=str, default="save_model_auto_encoder_all_delete_5000")
     args = parser.parse_args()
 
-    os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+    os.environ['CUDA_VISIBLE_DEVICES'] = '3'
 
-    # if not os.path.exists("dbpedia_csv"):
-    #     print("Downloading dbpedia dataset...")
-    #     download_dbpedia()
-
-    print("\nBuilding dictionary..")
+    print("\n Building dictionary..")
     word_dict = build_word_dict()
     print("Preprocessing dataset..")
     train_x, train_y = build_word_dataset("train", word_dict, MAX_DOCUMENT_LEN)
