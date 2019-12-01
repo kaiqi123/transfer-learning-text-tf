@@ -25,13 +25,11 @@ class AutoEncoder(object):
 
         with tf.variable_scope("rnn"):
             encoder_cell = rnn.BasicLSTMCell(self.num_hidden)
-
             _, encoder_states = tf.nn.dynamic_rnn(
                 encoder_cell, encoder_input_emb, sequence_length=self.encoder_input_len, dtype=tf.float32)
 
         with tf.variable_scope("decoder"):
             decoder_cell = rnn.BasicLSTMCell(self.num_hidden)
-
             decoder_outputs, _ = tf.nn.dynamic_rnn(
                 decoder_cell, decoder_input_emb, sequence_length=self.decoder_input_len,
                 initial_state=encoder_states, dtype=tf.float32)

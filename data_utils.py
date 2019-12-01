@@ -8,9 +8,14 @@ import pandas as pd
 import pickle
 import numpy as np
 
-TRAIN_PATH = "data/gossipcop_content_no_ignore.tsv"
-TEST_PATH = "data/politifact_content_no_ignore.tsv"
+# TRAIN_PATH = "data/gossipcop_content_no_ignore.tsv"
+# TEST_PATH = "data/politifact_content_no_ignore.tsv"
 
+# TRAIN_PATH = "data/gossipcop.tsv"
+# TEST_PATH = "data/politifact.tsv"
+
+TRAIN_PATH = "data/merge_data.tsv"
+TEST_PATH = "data/politifact.tsv"
 
 def download_dbpedia():
     dbpedia_url = 'https://github.com/le-scientifique/torchDatasets/raw/master/dbpedia_csv.tar.gz'
@@ -24,15 +29,14 @@ def clean_str(text):
     text = re.sub(r"[^A-Za-z0-9(),!?\'\`\"]", " ", text)
     text = re.sub(r"\s{2,}", " ", text)
     text = text.strip().lower()
-
     return text
 
 
 def build_word_dict():
     if not os.path.exists("word_dict.pickle"):
-        train_df = pd.read_csv(TRAIN_PATH, names=["id", "label", "content"],sep='\t',header=0)
+        train_df = pd.read_csv(TRAIN_PATH, names=["id", "label", "content"], sep='\t', header=0)
         contents = train_df["content"]
-        print('contents',len(contents))
+        print('contents', len(contents))
 
         words = list()
         for content in contents:
@@ -72,10 +76,9 @@ def build_word_dataset(step, word_dict, document_max_len):
     x = list(map(lambda d: d[:document_max_len], x))
     x = list(map(lambda d: d + (document_max_len - len(d)) * [word_dict["<pad>"]], x))
     la = list(df["label"])
-    print('---la----',len(la))
+    print('---la----', len(la))
     y = list(map(lambda d: d , la))
-    print('y',len(y))
-
+    print('y', len(y))
 
     return x, y
 

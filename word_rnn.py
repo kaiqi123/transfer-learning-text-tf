@@ -12,9 +12,10 @@ class WordRNN(object):
         self.x_len = tf.reduce_sum(tf.sign(self.x), 1)
         self.y = tf.placeholder(tf.int32, [None])
         self.keep_prob = tf.placeholder(tf.float32, [])
+        self.seed = 1234
 
         with tf.variable_scope("embedding"):
-            init_embeddings = tf.random_uniform([vocabulary_size, self.embedding_size])
+            init_embeddings = tf.random_uniform([vocabulary_size, self.embedding_size], seed=self.seed)
             embeddings = tf.get_variable("embeddings", initializer=init_embeddings)
             x_emb = tf.nn.embedding_lookup(embeddings, self.x)
 
@@ -39,3 +40,8 @@ class WordRNN(object):
         with tf.name_scope("accuracy"):
             correct_predictions = tf.equal(self.predictions, self.y)
             self.accuracy = tf.reduce_mean(tf.cast(correct_predictions, "float"), name="accuracy")
+
+        with tf.name_scope("lr"):
+            self.lr = tf.Variable(0.001, name='learning_rate', trainable=False)
+
+

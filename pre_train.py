@@ -7,7 +7,7 @@ from data_utils import build_word_dict, build_word_dataset, batch_iter, download
 import time
 
 BATCH_SIZE = 32
-NUM_EPOCHS = 10
+NUM_EPOCHS = 200
 MAX_DOCUMENT_LEN = 100
 num_train = 5816
 
@@ -31,7 +31,7 @@ def train(train_x, train_y, word_dict, args):
         # Summary
         loss_summary = tf.summary.scalar("loss", model.loss)
         summary_op = tf.summary.merge_all()
-        summary_writer = tf.summary.FileWriter(args.model, sess.graph)
+        summary_writer = tf.summary.FileWriter(args.save, sess.graph)
 
         # Checkpoint
         saver = tf.train.Saver(tf.global_variables(), max_to_keep=2)
@@ -44,8 +44,10 @@ def train(train_x, train_y, word_dict, args):
             _, step, summaries, loss = sess.run([train_op, global_step, summary_op, model.loss], feed_dict=feed_dict)
             summary_writer.add_summary(summaries, step)
 
-            if step % 10 == 0:
+            if step % 100 == 0:
                 print("step {0} : loss = {1}".format(step, loss))
+                with open("pre-train-loss-all.txt", "a") as f:
+                    print("step {0} : loss = {1}".format(step, loss), file=f)
 
         # Training loop
         batches = batch_iter(train_x, train_y, BATCH_SIZE, NUM_EPOCHS)
@@ -57,24 +59,24 @@ def train(train_x, train_y, word_dict, args):
 
             steps_per_epoch = int(num_train/BATCH_SIZE)
             if step % steps_per_epoch == 0:
-                print("epoch: {}, steps_per_epoch: {}".format(int(step/steps_per_epoch), steps_per_epoch))
+                print("epoch: {}, step: {}, steps_per_epoch: {}".format(int(step/steps_per_epoch), step, steps_per_epoch))
                 saver.save(sess, os.path.join(args.save, "model", "model.ckpt"), global_step=step)
-                print("step: {}, save to {}".format(step, args.save))
-                print("time of one epoch: {}".format(time.time()-st))
+                print("save to {}, time of one epoch: {}".format(args.save, time.time()-st))
                 st = time.time()
 
 
 if __name__ == "__main__":
+    stt = time.time()
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", type=str, default="auto_encoder", help="auto_encoder | language_model")
-    parser.add_argument("--save", type=str, default="save_model_auto_encoder")
+    parser.add_argument("--save", type=str, default="save_model_auto_encoder_all")
     args = parser.parse_args()
 
-    os.environ['CUDA_VISIBLE_DEVICES'] = "0"
+    os.environ['CUDA_VISIBLE_DEVICES'] = "2"
 
-    if not os.path.exists("dbpedia_csv"):
-        print("Downloading dbpedia dataset...")
-        download_dbpedia()
+    # if not os.path.exists("dbpedia_csv"):
+    #     print("Downloading dbpedia dataset...")
+    #     download_dbpedia()
 
     print("\nBuilding dictionary..")
     word_dict = build_word_dict()
@@ -82,3 +84,6 @@ if __name__ == "__main__":
     train_x, train_y = build_word_dataset("train", word_dict, MAX_DOCUMENT_LEN)
     print("length of train_x: {}, length of train_y: {}".format(len(train_x), len(train_y)))
     train(train_x, train_y, word_dict, args)
+
+    print("total time: {}".format(time.time() - stt))
+
